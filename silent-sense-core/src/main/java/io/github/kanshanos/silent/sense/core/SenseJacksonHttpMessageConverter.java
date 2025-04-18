@@ -5,7 +5,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.github.kanshanos.silent.sense.context.SenseContextHolder;
-import io.github.kanshanos.silent.sense.decider.request.SenseRequestDecider;
+import io.github.kanshanos.silent.sense.chain.data.SenseDataChain;
+import io.github.kanshanos.silent.sense.chain.request.SenseRequestChain;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -17,11 +18,16 @@ import java.lang.reflect.Type;
 
 public class SenseJacksonHttpMessageConverter extends MappingJackson2HttpMessageConverter {
 
-    private final SenseRequestDecider senseRequestDecider;
+    private final SenseRequestChain requestChain;
+    private final SenseDataChain dataChain;
 
-    public SenseJacksonHttpMessageConverter(ObjectMapper objectMapper, SenseRequestDecider senseRequestDecider) {
+
+    public SenseJacksonHttpMessageConverter(ObjectMapper objectMapper,
+                                            SenseRequestChain requestChain,
+                                            SenseDataChain dataChain) {
         super(objectMapper);
-        this.senseRequestDecider = senseRequestDecider;
+        this.requestChain = requestChain;
+        this.dataChain = dataChain;
     }
 
     @Override
@@ -32,7 +38,10 @@ public class SenseJacksonHttpMessageConverter extends MappingJackson2HttpMessage
 
         JsonGenerator generator;
         if (sense()) {
-            generator = new SenseJsonGenerator(getObjectMapper().getFactory().createGenerator(outputMessage.getBody(), encoding));
+            generator = new SenseJsonGenerator(
+                    getObjectMapper().getFactory().createGenerator(outputMessage.getBody(), encoding),
+                    dataChain
+            );
         } else {
             generator = getObjectMapper().getFactory().createGenerator(outputMessage.getBody(), encoding);
         }
@@ -45,11 +54,11 @@ public class SenseJacksonHttpMessageConverter extends MappingJackson2HttpMessage
     }
 
     /**
-     * 判断是否需要使用 LoggingJsonGenerator
+     * 判断是否需要使用 SenseJsonGenerator
      */
     private boolean sense() {
         HttpServletRequest request = SenseContextHolder.getRequest();
         HandlerMethod handler = SenseContextHolder.getHandler();
-        return this.senseRequestDecider.shouldProcess(request, handler);
+        return this.requestChain.process(request, handler);
     }
 }

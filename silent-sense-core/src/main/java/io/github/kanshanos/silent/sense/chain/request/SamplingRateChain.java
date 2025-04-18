@@ -1,4 +1,4 @@
-package io.github.kanshanos.silent.sense.decider.request;
+package io.github.kanshanos.silent.sense.chain.request;
 
 import io.github.kanshanos.silent.sense.properties.SilentSenseProperties;
 import org.springframework.web.method.HandlerMethod;
@@ -12,14 +12,14 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Kanshan
  * @since 2025/4/18 14:34
  */
-public class SamplingRateDecider extends AbstractSenseRequestDecider {
+public class SamplingRateChain extends AbstractSenseRequestChain {
 
     /**
      * 采样率
      */
     private final double samplingRate;
 
-    public SamplingRateDecider(SilentSenseProperties properties) {
+    public SamplingRateChain(SilentSenseProperties properties) {
         super(properties);
         this.samplingRate = properties.getSamplingRate();
     }

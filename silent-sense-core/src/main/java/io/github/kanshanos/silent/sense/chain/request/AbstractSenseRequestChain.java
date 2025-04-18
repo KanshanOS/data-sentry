@@ -1,29 +1,29 @@
-package io.github.kanshanos.silent.sense.decider.request;
+package io.github.kanshanos.silent.sense.chain.request;
 
 import io.github.kanshanos.silent.sense.properties.SilentSenseProperties;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
 
-public abstract class AbstractSenseRequestDecider implements SenseRequestDecider {
+public abstract class AbstractSenseRequestChain implements SenseRequestChain {
     private final SilentSenseProperties properties;
-    private SenseRequestDecider next;
+    private SenseRequestChain next;
 
-    public AbstractSenseRequestDecider(SilentSenseProperties properties) {
+    public AbstractSenseRequestChain(SilentSenseProperties properties) {
         this.properties = properties;
     }
 
-    public AbstractSenseRequestDecider linkWith(SenseRequestDecider next) {
+    public AbstractSenseRequestChain next(SenseRequestChain next) {
         this.next = next;
-        return (AbstractSenseRequestDecider) next;
+        return (AbstractSenseRequestChain) next;
     }
 
     @Override
-    public boolean shouldProcess(HttpServletRequest request, HandlerMethod handler) {
+    public boolean process(HttpServletRequest request, HandlerMethod handler) {
         if (!check(request, handler)) {
             return false; // 拦截住就直接返回 false，不继续判断后续节点
         }
-        return next == null || next.shouldProcess(request, handler);
+        return next == null || next.process(request, handler);
     }
 
     protected abstract boolean check(HttpServletRequest request, HandlerMethod handler);

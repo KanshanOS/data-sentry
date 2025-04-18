@@ -1,4 +1,4 @@
-package io.github.kanshanos.silent.sense.decider.request;
+package io.github.kanshanos.silent.sense.chain.request;
 
 import org.springframework.web.method.HandlerMethod;
 
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Kanshan
  * @since 2025/4/18 11:29
  */
-public interface SenseRequestDecider {
+public interface SenseRequestChain {
     /**
      * 是否需要处理
      *
@@ -18,5 +18,5 @@ public interface SenseRequestDecider {
      * @param handler 处理器
      * @return 是否需要处理
      */
-    boolean shouldProcess(HttpServletRequest request, HandlerMethod handler);
+    boolean process(HttpServletRequest request, HandlerMethod handler);
 }

@@ -1,4 +1,4 @@
-package io.github.kanshanos.silent.sense.decider.request;
+package io.github.kanshanos.silent.sense.chain.request;
 
 import io.github.kanshanos.silent.sense.properties.SilentSenseProperties;
 import org.springframework.http.server.PathContainer;
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
  * @author Kanshan
  * @since 2025/4/18 14:34
  */
-public class RequestURIWhitelistDecider extends AbstractSenseRequestDecider {
+public class RequestURIWhitelistChain extends AbstractSenseRequestChain {
 
     private static final PathPatternParser parser = new PathPatternParser();
 
     private final List<PathPattern> excludePathPatterns;
 
-    public RequestURIWhitelistDecider(SilentSenseProperties properties) {
+    public RequestURIWhitelistChain(SilentSenseProperties properties) {
         super(properties);
 
         this.excludePathPatterns = properties.getExcludePathPatterns().stream()

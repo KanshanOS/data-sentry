@@ -13,23 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("user")
 public class UserController {
 
+    private final User user = new User()
+            .setName("张三")
+            .setIdcard("310112199009015335")
+            .setAge(18)
+            .setEmail("123456@gmail.com")
+            .setAddress("上海市浦东新区")
+            .setPhone("15912341234");
+
     @GetMapping
     public User index() {
-        return new User()
-                .setName("张三")
-                .setAge(18)
-                .setEmail("123456@gmail.com")
-                .setAddress("上海市浦东新区")
-                .setPhone("15912341234");
+        return user;
     }
 
     @GetMapping("get/{id}")
     public User get(@PathVariable("id") Long id) {
-        return new User()
-                .setName("张三")
-                .setAge(18)
-                .setEmail("123456@gmail.com")
-                .setAddress("上海市浦东新区")
-                .setPhone("15912341234");
+        return user;
     }
 }

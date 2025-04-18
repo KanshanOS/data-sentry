@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class User {
     private String name;
+    private String idcard;
     private Integer age;
     private String email;
     private String phone;
