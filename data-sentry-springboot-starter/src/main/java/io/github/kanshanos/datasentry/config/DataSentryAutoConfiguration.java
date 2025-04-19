@@ -19,6 +19,8 @@ import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
 import io.github.kanshanos.datasentry.chain.request.TimeWindowFilterChain;
 import io.github.kanshanos.datasentry.interceptor.SentryInterceptor;
 import io.github.kanshanos.datasentry.report.ContextOutput;
+import io.github.kanshanos.datasentry.report.Reporter;
+import io.github.kanshanos.datasentry.report.SentryContextReporter;
 import io.github.kanshanos.datasentry.report.Slf4JContextOutput;
 import io.github.kanshanos.datasentry.properties.DataSentryProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -50,9 +52,8 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnMissingBean
     public HttpMessageConverter<Object> loggingJacksonConverter(ObjectMapper objectMapper,
                                                                 RequestFilterChain requestFilterChain,
-                                                                SensitiveDataDetector sensitiveDataDetector,
-                                                                ContextOutput contextOutput) {
-        return new SentryJacksonHttpMessageConverter(objectMapper, requestFilterChain, sensitiveDataDetector);
+                                                                SensitiveDataDetector sensitiveDataDetector) {
+        return new SentryJacksonHttpMessageConverter(objectMapper, requestFilterChain, sensitiveDataDetector, reporter());
     }
 
     @Bean
@@ -82,6 +83,12 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnMissingBean
     public ContextOutput contextOutput() {
         return new Slf4JContextOutput();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public Reporter reporter() {
+        return new SentryContextReporter();
     }
 
 

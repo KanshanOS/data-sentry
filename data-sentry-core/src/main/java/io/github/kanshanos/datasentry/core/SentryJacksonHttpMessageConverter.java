@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import io.github.kanshanos.datasentry.chain.data.SensitiveDataDetector;
 import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
 import io.github.kanshanos.datasentry.context.SentryContextHolder;
+import io.github.kanshanos.datasentry.report.Reporter;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -19,14 +20,17 @@ public class SentryJacksonHttpMessageConverter extends MappingJackson2HttpMessag
 
     private final RequestFilterChain requestChain;
     private final SensitiveDataDetector dataChain;
+    private final Reporter reporter;
 
 
     public SentryJacksonHttpMessageConverter(ObjectMapper objectMapper,
                                              RequestFilterChain requestChain,
-                                             SensitiveDataDetector dataChain) {
+                                             SensitiveDataDetector dataChain,
+                                             Reporter reporter) {
         super(objectMapper);
         this.requestChain = requestChain;
         this.dataChain = dataChain;
+        this.reporter = reporter;
     }
 
     @Override
@@ -39,7 +43,8 @@ public class SentryJacksonHttpMessageConverter extends MappingJackson2HttpMessag
         if (this.shouldDetectSensitiveData()) {
             generator = new SentryJsonGenerator(
                     getObjectMapper().getFactory().createGenerator(outputMessage.getBody(), encoding),
-                    dataChain
+                    dataChain,
+                    reporter
             );
         } else {
             generator = getObjectMapper().getFactory().createGenerator(outputMessage.getBody(), encoding);

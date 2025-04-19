@@ -1,6 +1,6 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.context.SentryContextHolder;
+import io.github.kanshanos.datasentry.report.Reporter;
 
 /**
  * 中国姓名
@@ -11,11 +11,11 @@ import io.github.kanshanos.datasentry.context.SentryContextHolder;
 public class ChineseNameDetector extends AbstractSensitiveDataDetector {
 
     @Override
-    protected boolean detect(String name, String data) {
+    protected boolean detect(Reporter reporter, String name, String data) {
         if (data == null) return false;
         boolean matches = data.matches("^[\\u4e00-\\u9fa5]{2,5}(·[\\u4e00-\\u9fa5]{1,4})?$");
         if (matches) {
-            SentryContextHolder.addSensitiveData("chinese_name", name, data);
+            reporter.report("chinese_name", name, data);
         }
         return matches;
     }
