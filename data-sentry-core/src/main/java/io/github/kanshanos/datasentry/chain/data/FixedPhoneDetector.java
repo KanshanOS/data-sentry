@@ -1,6 +1,6 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.report.Reporter;
+import io.github.kanshanos.datasentry.output.ContextOutput;
 
 /**
  * 固定电话
@@ -11,11 +11,11 @@ import io.github.kanshanos.datasentry.report.Reporter;
 public class FixedPhoneDetector extends AbstractSensitiveDataDetector {
 
     @Override
-    protected boolean detect(Reporter reporter, String name, String data) {
+    protected boolean detect(ContextOutput output, String name, String data) {
         if (data == null) return false;
         boolean matches = data.matches("^(\\d{3,4}-?)?\\d{7,8}$");
         if (matches) {
-            reporter.report("fixed_phone", name, data);
+            output.outputSensitiveItem("fixed_phone", name, data);
         }
         return matches;
     }

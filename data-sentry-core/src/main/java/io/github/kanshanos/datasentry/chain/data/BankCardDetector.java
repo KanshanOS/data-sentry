@@ -1,6 +1,6 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.report.Reporter;
+import io.github.kanshanos.datasentry.output.ContextOutput;
 
 import java.util.regex.Pattern;
 
@@ -15,11 +15,11 @@ public class BankCardDetector extends AbstractSensitiveDataDetector {
     private static final Pattern PATTERN = Pattern.compile("^\\d{16,19}$");
 
     @Override
-    protected boolean detect(Reporter reporter, String name, String data) {
+    protected boolean detect(ContextOutput output, String name, String data) {
         if (data == null) return false;
         boolean matches = PATTERN.matcher(data).matches();
         if (matches) {
-            reporter.report("bank_card", name, data);
+            output.outputSensitiveItem("bank_card", name, data);
         }
         return matches;
     }

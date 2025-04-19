@@ -1,6 +1,6 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.report.Reporter;
+import io.github.kanshanos.datasentry.output.ContextOutput;
 
 /**
  * 身份证号码
@@ -11,7 +11,7 @@ import io.github.kanshanos.datasentry.report.Reporter;
 public class IdcardDetector extends AbstractSensitiveDataDetector {
 
     @Override
-    protected boolean detect(Reporter reporter, String name, String data) {
+    protected boolean detect(ContextOutput output, String name, String data) {
         if (data == null) return false;
         // 15 位或 18 位身份证号
         boolean matches = data.matches("(^\\d{15}$)|(^\\d{17}([0-9Xx])$)");
@@ -19,7 +19,7 @@ public class IdcardDetector extends AbstractSensitiveDataDetector {
             matches = validateIdCardChecksum(data);
         }
         if (matches) {
-            reporter.report("idcard", name, data);
+            output.outputSensitiveItem("idcard", name, data);
         }
         return matches;
     }

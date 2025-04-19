@@ -1,6 +1,6 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.report.Reporter;
+import io.github.kanshanos.datasentry.output.ContextOutput;
 
 /**
  * 抽象的 AbstractSenseDataChain
@@ -18,12 +18,12 @@ public abstract class AbstractSensitiveDataDetector implements SensitiveDataDete
     }
 
     @Override
-    public boolean process(Reporter reporter, String name, String data) {
-        if (detect(reporter, name, data)) {
+    public boolean process(ContextOutput output, String name, String data) {
+        if (detect(output, name, data)) {
             return false; // 拦截住就直接返回 false，不继续判断后续节点
         }
-        return next == null || next.process(reporter, name, data);
+        return next == null || next.process(output, name, data);
     }
 
-    protected abstract boolean detect(Reporter reporter, String name, String data);
+    protected abstract boolean detect(ContextOutput output, String name, String data);
 }

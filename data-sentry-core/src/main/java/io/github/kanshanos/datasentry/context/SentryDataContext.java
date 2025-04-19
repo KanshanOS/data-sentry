@@ -19,5 +19,5 @@ public class SentryDataContext {
 
     private RequestHandler request;
 
-    private List<SensitiveDataItem> senses;
+    private List<SensitiveDataItem> sensitiveData;
 }

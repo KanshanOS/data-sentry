@@ -4,7 +4,7 @@ package io.github.kanshanos.datasentry.interceptor;
 import io.github.kanshanos.datasentry.cache.CacheManager;
 import io.github.kanshanos.datasentry.context.SentryContextHolder;
 import io.github.kanshanos.datasentry.context.SentryDataContext;
-import io.github.kanshanos.datasentry.report.ContextOutput;
+import io.github.kanshanos.datasentry.output.ContextOutput;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -45,7 +45,7 @@ public class SentryInterceptor implements HandlerInterceptor {
         try {
             if (SentryContextHolder.hit()) {
                 CacheManager.SENSITIVE_DATA_HIT_CACHE.put(SentryContextHolder.getRequestHandler().key(), Instant.now().getEpochSecond());
-                contextOutput.output(new SentryDataContext(SentryContextHolder.getRequestHandler(), SentryContextHolder.getSensitiveData()));
+                contextOutput.outputContext(new SentryDataContext(SentryContextHolder.getRequestHandler(), SentryContextHolder.getSensitiveData()));
             }
         } finally {
             SentryContextHolder.clear(); // 确保在任何情况下都清理 ThreadLocal

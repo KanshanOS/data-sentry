@@ -1,6 +1,6 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.report.Reporter;
+import io.github.kanshanos.datasentry.output.ContextOutput;
 
 /**
  * 手机号
@@ -11,11 +11,11 @@ import io.github.kanshanos.datasentry.report.Reporter;
 public class MobileDetector extends AbstractSensitiveDataDetector {
 
     @Override
-    protected boolean detect(Reporter reporter, String name, String data) {
+    protected boolean detect(ContextOutput output, String name, String data) {
         if (data == null) return false;
         boolean matches = data.matches("^1[3-9]\\d{9}$");
         if (matches) {
-            reporter.report("mobile", name, data);
+            output.outputSensitiveItem("mobile", name, data);
         }
         return matches;
     }

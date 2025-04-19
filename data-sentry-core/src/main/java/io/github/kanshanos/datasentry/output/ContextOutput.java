@@ -1,4 +1,4 @@
-package io.github.kanshanos.datasentry.report;
+package io.github.kanshanos.datasentry.output;
 
 import io.github.kanshanos.datasentry.context.SentryDataContext;
 
@@ -10,5 +10,7 @@ import io.github.kanshanos.datasentry.context.SentryDataContext;
  */
 public interface ContextOutput {
 
-    void output(SentryDataContext context);
+    void outputContext(SentryDataContext context);
+
+    void outputSensitiveItem(String type, String name, String data);
 }

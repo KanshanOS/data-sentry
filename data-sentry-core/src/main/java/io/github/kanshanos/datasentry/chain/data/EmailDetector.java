@@ -1,6 +1,6 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.report.Reporter;
+import io.github.kanshanos.datasentry.output.ContextOutput;
 
 /**
  * 邮箱
@@ -11,11 +11,11 @@ import io.github.kanshanos.datasentry.report.Reporter;
 public class EmailDetector extends AbstractSensitiveDataDetector {
 
     @Override
-    protected boolean detect(Reporter reporter, String name, String data) {
+    protected boolean detect(ContextOutput output, String name, String data) {
         if (data == null) return false;
         boolean matches = data.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
         if (matches) {
-            reporter.report("email", name, data);
+            output.outputSensitiveItem("email", name, data);
         }
         return matches;
     }

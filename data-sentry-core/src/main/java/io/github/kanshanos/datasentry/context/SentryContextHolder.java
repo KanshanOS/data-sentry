@@ -37,7 +37,7 @@ public class SentryContextHolder {
         return SENSITIVE_DATA.get();
     }
 
-    public static boolean hit(){
+    public static boolean hit() {
         return !CollectionUtils.isEmpty(SENSITIVE_DATA.get());
     }
 

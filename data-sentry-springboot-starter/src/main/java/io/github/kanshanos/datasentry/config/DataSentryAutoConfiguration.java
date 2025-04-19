@@ -2,9 +2,6 @@ package io.github.kanshanos.datasentry.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.kanshanos.datasentry.chain.data.AbstractSensitiveDataDetector;
-import io.github.kanshanos.datasentry.chain.request.AbstractRequestFilterChain;
-import io.github.kanshanos.datasentry.chain.request.SensitiveHitCacheChain;
-import io.github.kanshanos.datasentry.core.SentryJacksonHttpMessageConverter;
 import io.github.kanshanos.datasentry.chain.data.BankCardDetector;
 import io.github.kanshanos.datasentry.chain.data.ChineseAddressDetector;
 import io.github.kanshanos.datasentry.chain.data.ChineseNameDetector;
@@ -13,16 +10,17 @@ import io.github.kanshanos.datasentry.chain.data.FixedPhoneDetector;
 import io.github.kanshanos.datasentry.chain.data.IdcardDetector;
 import io.github.kanshanos.datasentry.chain.data.MobileDetector;
 import io.github.kanshanos.datasentry.chain.data.SensitiveDataDetector;
+import io.github.kanshanos.datasentry.chain.request.AbstractRequestFilterChain;
+import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
 import io.github.kanshanos.datasentry.chain.request.RequestURIWhitelistFilterChain;
 import io.github.kanshanos.datasentry.chain.request.SamplingRateFilterChain;
-import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
+import io.github.kanshanos.datasentry.chain.request.SensitiveHitCacheChain;
 import io.github.kanshanos.datasentry.chain.request.TimeWindowFilterChain;
+import io.github.kanshanos.datasentry.core.SentryJacksonHttpMessageConverter;
 import io.github.kanshanos.datasentry.interceptor.SentryInterceptor;
-import io.github.kanshanos.datasentry.report.ContextOutput;
-import io.github.kanshanos.datasentry.report.Reporter;
-import io.github.kanshanos.datasentry.report.SentryContextReporter;
-import io.github.kanshanos.datasentry.report.Slf4JContextOutput;
 import io.github.kanshanos.datasentry.properties.DataSentryProperties;
+import io.github.kanshanos.datasentry.output.ContextOutput;
+import io.github.kanshanos.datasentry.output.Slf4JContextOutput;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +51,7 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
     public HttpMessageConverter<Object> loggingJacksonConverter(ObjectMapper objectMapper,
                                                                 RequestFilterChain requestFilterChain,
                                                                 SensitiveDataDetector sensitiveDataDetector) {
-        return new SentryJacksonHttpMessageConverter(objectMapper, requestFilterChain, sensitiveDataDetector, reporter());
+        return new SentryJacksonHttpMessageConverter(objectMapper, requestFilterChain, sensitiveDataDetector, contextOutput());
     }
 
     @Bean
@@ -83,12 +81,6 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnMissingBean
     public ContextOutput contextOutput() {
         return new Slf4JContextOutput();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public Reporter reporter() {
-        return new SentryContextReporter();
     }
 
 

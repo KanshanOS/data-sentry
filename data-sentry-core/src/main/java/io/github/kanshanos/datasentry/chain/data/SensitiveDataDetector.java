@@ -1,6 +1,6 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.report.Reporter;
+import io.github.kanshanos.datasentry.output.ContextOutput;
 
 /**
  * 敏感数据分析决策接口
@@ -10,5 +10,5 @@ import io.github.kanshanos.datasentry.report.Reporter;
  */
 public interface SensitiveDataDetector {
 
-    boolean process(Reporter reporter, String name, String data);
+    boolean process(ContextOutput output, String name, String data);
 }
