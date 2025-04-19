@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.kanshanos</groupId>
-    <artifactId>silent-sense</artifactId>
+    <artifactId>data-sentry</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>silent-sense</name>
+    <name>data-sentry</name>
 
     <licenses>
         <license>
@@ -16,15 +16,15 @@
         </license>
     </licenses>
     <modules>
-        <module>silent-sense-core</module>
-        <module>silent-sense-sample</module>
-        <module>silent-sense-springboot-starter</module>
+        <module>data-sentry-core</module>
+        <module>data-sentry-sample</module>
+        <module>data-sentry-springboot-starter</module>
     </modules>
 
     <scm>
-        <connection>scm:git:https://github.com/KanshanOS/silent-sense.git</connection>
-        <developerConnection>scm:git:git@github.com:KanshanOS/silent-sense.git</developerConnection>
-        <url>https://github.com/KanshanOS/silent-sense</url>
+        <connection>scm:git:https://github.com/KanshanOS/data-sentry.git</connection>
+        <developerConnection>scm:git:git@github.com:KanshanOS/data-sentry.git</developerConnection>
+        <url>https://github.com/KanshanOS/data-sentry</url>
     </scm>
 
     <developers>
@@ -52,17 +52,17 @@
         <dependencies>
             <dependency>
                 <groupId>io.github.kanshanos</groupId>
-                <artifactId>silent-sense-core</artifactId>
+                <artifactId>data-sentry-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.kanshanos</groupId>
-                <artifactId>silent-sense-springboot-starter</artifactId>
+                <artifactId>data-sentry-springboot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.kanshanos</groupId>
-                <artifactId>silent-sense-sample</artifactId>
+                <artifactId>data-sentry-sample</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

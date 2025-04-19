@@ -1,0 +1,8 @@
+kanshanos:
+  datasentry:
+    enabled: true
+    sampling-rate: 1
+    exclude-path-patterns:
+      - /user
+    time-window-hit-interval-seconds: 10
+    sensitive-hit-interval-seconds: 60
