@@ -19,11 +19,8 @@ public abstract class AbstractRequestFilterChain implements RequestFilterChain {
     }
 
     @Override
-    public boolean process(HttpServletRequest request) {
-        if (!filter(request)) {
-            return false; // 拦截住就直接返回 false，不继续判断后续节点
-        }
-        return next == null || next.process(request);
+    public boolean filter(HttpServletRequest request) {
+        return next == null || next.filter(request);
     }
 
     @Override
@@ -32,6 +29,4 @@ public abstract class AbstractRequestFilterChain implements RequestFilterChain {
             next.handleContext(context);
         }
     }
-
-    protected abstract boolean filter(HttpServletRequest request);
 }

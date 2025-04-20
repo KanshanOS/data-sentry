@@ -11,10 +11,10 @@ import io.github.kanshanos.datasentry.context.SensitiveDataItem;
 public interface SensitiveDataDetector {
 
     /**
-     * 处理数据并返回检测到的敏感数据项
+     * 检测数据并返回敏感数据项
      *
      * @author Kanshan
      * @since 2025/4/20 11:07
      */
-    SensitiveDataItem process(String name, String data);
+    SensitiveDataItem detect(String name, String data);
 }

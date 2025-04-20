@@ -2,7 +2,6 @@ package io.github.kanshanos.datasentry.chain.data;
 
 import cn.hutool.core.lang.Validator;
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 中国姓名
@@ -11,20 +10,15 @@ import org.apache.commons.lang3.StringUtils;
  * @since 2025/4/18 15:20
  */
 public class ChineseNameDetector extends AbstractSensitiveDataDetector {
+    private static final DetectorConfig CONFIG = new DetectorConfig("chinese_name", 2, 4);
 
-    private static final String TYPE = "chinese_name";
-    private static final int MIN_LENGTH = 2;
-    private static final int MAX_LENGTH = 5;
+    public ChineseNameDetector() {
+        super(CONFIG);
+    }
 
     @Override
-    protected SensitiveDataItem detect(String name, String data) {
-        if (data == null
-                || data.length() < MIN_LENGTH
-                || data.length() > MAX_LENGTH
-                || StringUtils.contains(data, MASK_FLAG)) return null;
+    protected SensitiveDataItem doDetect(String name, String data) {
+        return Validator.isChineseName(data) ? new SensitiveDataItem(CONFIG.getType(), name, data) : null;
 
-        if (!Validator.isChineseName(data)) return null;
-
-        return new SensitiveDataItem(TYPE, name, data);
     }
 }

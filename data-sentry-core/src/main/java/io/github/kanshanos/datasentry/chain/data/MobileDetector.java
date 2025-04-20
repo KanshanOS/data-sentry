@@ -2,7 +2,6 @@ package io.github.kanshanos.datasentry.chain.data;
 
 import cn.hutool.core.lang.Validator;
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 手机号
@@ -12,20 +11,14 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MobileDetector extends AbstractSensitiveDataDetector {
 
-    private static final String TYPE = "mobile";
-    private static final int MIN_LENGTH = 11;
-    private static final int MAX_LENGTH = 14;
+    private static final DetectorConfig CONFIG = new DetectorConfig("mobile", 11, 14);
 
+    public MobileDetector() {
+        super(CONFIG);
+    }
 
     @Override
-    protected SensitiveDataItem detect(String name, String data) {
-        if (data == null
-                || data.length() < MIN_LENGTH
-                || data.length() > MAX_LENGTH
-                || StringUtils.contains(data, MASK_FLAG)) return null;
-
-        if (!Validator.isMobile(data)) return null;
-
-        return new SensitiveDataItem(TYPE, name, data);
+    protected SensitiveDataItem doDetect(String name, String data) {
+        return Validator.isMobile(data) ? new SensitiveDataItem(CONFIG.getType(), name, data) : null;
     }
 }

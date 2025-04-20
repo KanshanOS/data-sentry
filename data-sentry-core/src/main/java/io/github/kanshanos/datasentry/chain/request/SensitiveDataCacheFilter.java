@@ -10,36 +10,33 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 指定时间内已经命中敏感信息的接口不再检测
+ * 用于避免在指定时间窗口内对已检测到敏感数据的请求重复检测
  *
  * @author Kanshan
  * @since 2025/4/19 21:23
  */
-public class SensitiveHitCacheChain extends AbstractRequestFilterChain {
+public class SensitiveDataCacheFilter extends AbstractRequestFilterChain {
 
-    /**
-     * 敏感信息命中缓存
-     */
     public final Map<String, Long> cache = new ConcurrentHashMap<>();
 
+    /**
+     * 缓存有效期（秒），在此期间跳过重复检测
+     */
+    private final long cacheExpirationSeconds;
 
-    private final long sensitiveHitIntervalSeconds;
-
-    public SensitiveHitCacheChain(DataSentryProperties properties) {
+    public SensitiveDataCacheFilter(DataSentryProperties properties) {
         super(properties);
-        sensitiveHitIntervalSeconds = properties.getSensitiveHitIntervalSeconds();
+        cacheExpirationSeconds = properties.getCacheExpirationSeconds();
     }
 
     @Override
-    protected boolean filter(HttpServletRequest request) {
+    public boolean filter(HttpServletRequest request) {
         String key = SentryContextHolder.getRequestHandler().key();
-        Long lastHitTime = cache.get(key);
-        // 检查是否在时间窗口内命中
-        if (lastHitTime != null) {
-            long now = Instant.now().getEpochSecond();
-            return now - lastHitTime > sensitiveHitIntervalSeconds; // 在时间窗口内，跳过检测
-        }
-        return true;
+        long now = Instant.now().getEpochSecond();
+        Long last = cache.get(key);
+
+        boolean recheck = last == null || now - last > cacheExpirationSeconds;
+        return recheck && super.filter(request);
     }
 
     @Override

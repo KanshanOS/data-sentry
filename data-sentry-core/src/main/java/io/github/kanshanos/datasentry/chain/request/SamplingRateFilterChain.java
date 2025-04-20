@@ -24,8 +24,9 @@ public class SamplingRateFilterChain extends AbstractRequestFilterChain {
     }
 
     @Override
-    protected boolean filter(HttpServletRequest request) {
+    public boolean filter(HttpServletRequest request) {
         // 在 0.0 ~ 1.0 之间生成一个 double，若小于采样率则命中
-        return ThreadLocalRandom.current().nextDouble() < samplingRate;
+        boolean shouldProcess = ThreadLocalRandom.current().nextDouble() < samplingRate;
+        return shouldProcess && super.filter(request);
     }
 }

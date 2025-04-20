@@ -10,29 +10,33 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 时间窗口命中
+ * 限制请求在指定时间窗口内的处理频率
  *
  * @author Kanshan
  * @since 2025/4/18 14:33
  */
-public class TimeWindowFilterChain extends AbstractRequestFilterChain {
+public class RequestRateLimitFilter extends AbstractRequestFilterChain {
 
     private final Map<String, Long> cache = new ConcurrentHashMap<>();
 
-    private final long timeWindowHitIntervalSeconds;
+    /**
+     * 频率限制时间间隔（秒），在此期间阻止重复处理
+     */
+    private final long rateLimitIntervalSeconds;
 
-    public TimeWindowFilterChain(DataSentryProperties properties) {
+    public RequestRateLimitFilter(DataSentryProperties properties) {
         super(properties);
-        this.timeWindowHitIntervalSeconds = properties.getTimeWindowHitIntervalSeconds();
+        this.rateLimitIntervalSeconds = properties.getRateLimitIntervalSeconds();
     }
 
     @Override
-    protected boolean filter(HttpServletRequest request) {
+    public boolean filter(HttpServletRequest request) {
         String key = SentryContextHolder.getRequestHandler().key();
         long now = Instant.now().getEpochSecond();
         Long last = cache.get(key);
 
-        return last == null || now - last > timeWindowHitIntervalSeconds;
+        boolean recheck = last == null || now - last > rateLimitIntervalSeconds;
+        return recheck && super.filter(request);
     }
 
 

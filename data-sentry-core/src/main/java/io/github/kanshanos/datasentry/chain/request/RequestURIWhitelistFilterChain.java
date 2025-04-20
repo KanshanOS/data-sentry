@@ -22,7 +22,7 @@ public class RequestURIWhitelistFilterChain extends AbstractRequestFilterChain {
 
     private final List<PathPattern> excludePathPatterns;
 
-    private final ConcurrentHashMap<String, Boolean> uriCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Boolean> cache = new ConcurrentHashMap<>();
 
     public RequestURIWhitelistFilterChain(DataSentryProperties properties) {
         super(properties);
@@ -33,9 +33,10 @@ public class RequestURIWhitelistFilterChain extends AbstractRequestFilterChain {
     }
 
     @Override
-    protected boolean filter(HttpServletRequest request) {
+    public boolean filter(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return !uriCache.computeIfAbsent(uri, this::match);
+        boolean excluded = cache.computeIfAbsent(uri, this::match);
+        return !excluded && super.filter(request);
     }
 
     public boolean match(String uri) {

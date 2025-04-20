@@ -19,11 +19,13 @@ import java.util.List;
 public class DataSentryProperties {
     public static final String PREFIX = "kanshanos.datasentry";
 
+    /**
+     * 是否启用 DataSentry
+     */
     private boolean enabled = true;
 
-
     /**
-     * 采样率
+     * 采样率，范围 [0, 1]，决定请求被处理的概率
      */
     private double samplingRate = 0.5;
 
@@ -33,13 +35,13 @@ public class DataSentryProperties {
     private List<String> excludePathPatterns = Collections.emptyList();
 
     /**
-     * 时间窗口命中间隔时间，单位秒
+     * 请求频率限制的时间间隔（秒），在此期间阻止重复处理，默认：10分钟
      */
-    private long timeWindowHitIntervalSeconds = 60;
+    private long rateLimitIntervalSeconds = 10 * 60;
 
     /**
-     * 敏感数据命中间隔时间，单位秒
+     * 敏感数据检测缓存的有效期（秒），在此期间跳过重复检测，默认：7天
      */
-    private long sensitiveHitIntervalSeconds = 60;
+    private long cacheExpirationSeconds = 24 * 60 * 60;
 
 }

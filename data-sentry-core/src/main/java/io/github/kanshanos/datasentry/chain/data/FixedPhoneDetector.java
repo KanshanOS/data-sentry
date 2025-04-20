@@ -2,7 +2,6 @@ package io.github.kanshanos.datasentry.chain.data;
 
 import cn.hutool.core.util.PhoneUtil;
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 固定电话
@@ -11,20 +10,14 @@ import org.apache.commons.lang3.StringUtils;
  * @since 2025/4/18 15:20
  */
 public class FixedPhoneDetector extends AbstractSensitiveDataDetector {
+    private static final DetectorConfig CONFIG = new DetectorConfig("fixed_phone", 6, 15);
 
-    private static final String TYPE = "fixed_phone";
-    private static final int MIN_LENGTH = 6;
-    private static final int MAX_LENGTH = 15;
+    public FixedPhoneDetector() {
+        super(CONFIG);
+    }
 
     @Override
-    protected SensitiveDataItem detect(String name, String data) {
-        if (data == null
-                || data.length() < MIN_LENGTH
-                || data.length() > MAX_LENGTH
-                || StringUtils.contains(data, MASK_FLAG)) return null;
-
-        if (!PhoneUtil.isTel(data)) return null;
-
-        return new SensitiveDataItem(TYPE, name, data);
+    protected SensitiveDataItem doDetect(String name, String data) {
+        return PhoneUtil.isTel(data) ? new SensitiveDataItem(config.getType(), name, data) : null;
     }
 }

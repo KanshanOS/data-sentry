@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface RequestFilterChain {
     /**
-     * 是否需要处理
+     * 过滤请求，决定是否需要处理
      *
      * @param request 请求
      * @return 是否需要处理
      */
-    boolean process(HttpServletRequest request);
+    boolean filter(HttpServletRequest request);
 
     /**
      * 处理上下文数据，例如缓存回写

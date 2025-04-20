@@ -14,8 +14,8 @@ import io.github.kanshanos.datasentry.chain.request.AbstractRequestFilterChain;
 import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
 import io.github.kanshanos.datasentry.chain.request.RequestURIWhitelistFilterChain;
 import io.github.kanshanos.datasentry.chain.request.SamplingRateFilterChain;
-import io.github.kanshanos.datasentry.chain.request.SensitiveHitCacheChain;
-import io.github.kanshanos.datasentry.chain.request.TimeWindowFilterChain;
+import io.github.kanshanos.datasentry.chain.request.SensitiveDataCacheFilter;
+import io.github.kanshanos.datasentry.chain.request.RequestRateLimitFilter;
 import io.github.kanshanos.datasentry.core.SentryJacksonHttpMessageConverter;
 import io.github.kanshanos.datasentry.interceptor.SentryInterceptor;
 import io.github.kanshanos.datasentry.properties.DataSentryProperties;
@@ -59,8 +59,8 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
     public RequestFilterChain requestFilterChain() {
         AbstractRequestFilterChain head = new SamplingRateFilterChain(properties);
         head.next(new RequestURIWhitelistFilterChain(properties))
-                .next(new TimeWindowFilterChain(properties))
-                .next(new SensitiveHitCacheChain(properties));
+                .next(new RequestRateLimitFilter(properties))
+                .next(new SensitiveDataCacheFilter(properties));
         return head;
     }
 

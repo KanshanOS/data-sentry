@@ -42,7 +42,7 @@ public class SentryJsonGenerator extends JsonGeneratorDelegate {
     public void writeString(String text) throws IOException {
         try {
             String name = StringUtils.firstNonBlank(fieldName, _fieldName.getValue());
-            SensitiveDataItem sensitiveDataItem = this.dataChain.process(name, text);
+            SensitiveDataItem sensitiveDataItem = this.dataChain.detect(name, text);
             if (Objects.nonNull(sensitiveDataItem)) {
                 SentryContextHolder.addSensitiveData(sensitiveDataItem);
             }

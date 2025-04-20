@@ -2,7 +2,6 @@ package io.github.kanshanos.datasentry.chain.data;
 
 import cn.hutool.core.lang.Validator;
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 邮箱
@@ -12,19 +11,14 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EmailDetector extends AbstractSensitiveDataDetector {
 
-    private static final String TYPE = "email";
-    private static final int MIN_LENGTH = 5;
-    private static final int MAX_LENGTH = 30;
+    private static final DetectorConfig CONFIG = new DetectorConfig("email", 5, 30);
+
+    public EmailDetector() {
+        super(CONFIG);
+    }
 
     @Override
-    protected SensitiveDataItem detect(String name, String data) {
-        if (data == null
-                || data.length() < MIN_LENGTH
-                || data.length() > MAX_LENGTH
-                || StringUtils.contains(data, MASK_FLAG)) return null;
-
-        if (!Validator.isEmail(data)) return null;
-
-        return new SensitiveDataItem(TYPE, name, data);
+    protected SensitiveDataItem doDetect(String name, String data) {
+        return Validator.isEmail(data) ? new SensitiveDataItem(CONFIG.getType(), name, data) : null;
     }
 }

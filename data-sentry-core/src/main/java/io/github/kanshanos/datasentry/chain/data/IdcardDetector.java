@@ -2,7 +2,6 @@ package io.github.kanshanos.datasentry.chain.data;
 
 import cn.hutool.core.util.IdcardUtil;
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 身份证号码
@@ -11,21 +10,14 @@ import org.apache.commons.lang3.StringUtils;
  * @since 2025/4/18 15:20
  */
 public class IdcardDetector extends AbstractSensitiveDataDetector {
+    private static final DetectorConfig CONFIG = new DetectorConfig("idcard", 10, 18);
 
-    private static final String TYPE = "idcard";
-    private static final int MIN_LENGTH = 10;
-    private static final int MAX_LENGTH = 18;
+    public IdcardDetector() {
+        super(CONFIG);
+    }
 
     @Override
-    protected SensitiveDataItem detect(String name, String data) {
-        if (data == null
-                || data.length() < MIN_LENGTH
-                || data.length() > MAX_LENGTH
-                || StringUtils.contains(data, MASK_FLAG)) return null;
-
-        if (!IdcardUtil.isValidCard(data)) return null;
-
-        return new SensitiveDataItem(TYPE, name, data);
-
+    protected SensitiveDataItem doDetect(String name, String data) {
+        return IdcardUtil.isValidCard(data) ? new SensitiveDataItem(CONFIG.getType(), name, data) : null;
     }
 }
