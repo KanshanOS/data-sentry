@@ -40,8 +40,15 @@ public class SentryJsonGenerator extends JsonGeneratorDelegate {
 
     @Override
     public void writeString(String text) throws IOException {
-        String name = StringUtils.firstNonBlank(fieldName, _fieldName.getValue());
-        this.dataChain.process(reporter, name, text);
+        try {
+            String name = StringUtils.firstNonBlank(fieldName, _fieldName.getValue());
+            SensitiveDataItem sensitiveDataItem = this.dataChain.process(name, text);
+            if (Objects.nonNull(sensitiveDataItem)) {
+                SentryContextHolder.addSensitiveData(sensitiveDataItem);
+            }
+        } catch (Exception e) {
+            output.error("writeString error", e);
+        }
         super.writeString(text);
     }
 }
