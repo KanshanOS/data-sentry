@@ -18,7 +18,7 @@ public class UserController {
             .setIdcard("310112199009015335")
             .setAge(18)
             .setEmail("123456@gmail.com")
-            .setAddress("上海市浦东新区")
+            .setAddress("上海市浦东新区世纪大道1号")
             .setPhone("15912341234");
 
     @GetMapping

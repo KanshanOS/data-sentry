@@ -1,8 +1,8 @@
 package io.github.kanshanos.datasentry.chain.data;
 
+import cn.hutool.core.util.IdcardUtil;
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
-
-import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 身份证号码
@@ -13,32 +13,19 @@ import java.util.regex.Pattern;
 public class IdcardDetector extends AbstractSensitiveDataDetector {
 
     private static final String TYPE = "idcard";
-    private static final int MIN_LENGTH = 15;
+    private static final int MIN_LENGTH = 10;
     private static final int MAX_LENGTH = 18;
-    private static final Pattern PATTERN = Pattern.compile("(^\\d{15}$)|(^\\d{17}([0-9Xx])$)");
 
     @Override
     protected SensitiveDataItem detect(String name, String data) {
-        if (data == null) return null;
-        if (data.length() < MIN_LENGTH || data.length() > MAX_LENGTH) return null;
-        // 15 位或 18 位身份证号
-        boolean matches = PATTERN.matcher(data).matches();
-        if (matches && data.length() == 18) {
-            matches = validateIdCardChecksum(data);
-        }
+        if (data == null
+                || data.length() < MIN_LENGTH
+                || data.length() > MAX_LENGTH
+                || StringUtils.contains(data, MASK_FLAG)) return null;
 
-        return matches ? new SensitiveDataItem(TYPE, name, data) : null;
+        if (!IdcardUtil.isValidCard(data)) return null;
 
-    }
+        return new SensitiveDataItem(TYPE, name, data);
 
-    private boolean validateIdCardChecksum(String idcard) {
-        int[] weights = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
-        char[] checkCodes = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
-        int sum = 0;
-        for (int i = 0; i < 17; i++) {
-            sum += Character.getNumericValue(idcard.charAt(i)) * weights[i];
-        }
-        int mod = sum % 11;
-        return checkCodes[mod] == Character.toUpperCase(idcard.charAt(17));
     }
 }

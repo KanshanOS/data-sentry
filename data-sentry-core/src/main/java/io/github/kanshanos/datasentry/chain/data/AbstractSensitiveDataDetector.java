@@ -12,6 +12,11 @@ public abstract class AbstractSensitiveDataDetector implements SensitiveDataDete
 
     private SensitiveDataDetector next;
 
+    /**
+     * 脱敏标记
+     */
+    protected static final String MASK_FLAG = "**";
+
     public AbstractSensitiveDataDetector next(SensitiveDataDetector next) {
         this.next = next;
         return (AbstractSensitiveDataDetector) next;

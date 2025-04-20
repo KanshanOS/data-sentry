@@ -1,6 +1,7 @@
 package io.github.kanshanos.datasentry.chain.data;
 
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Pattern;
 
@@ -19,9 +20,13 @@ public class BankCardDetector extends AbstractSensitiveDataDetector {
 
     @Override
     protected SensitiveDataItem detect(String name, String data) {
-        if (data == null) return null;
-        if (data.length() < MIN_LENGTH || data.length() > MAX_LENGTH) return null;
-        boolean matches = PATTERN.matcher(data).matches();
-        return matches ? new SensitiveDataItem(TYPE, name, data) : null;
+        if (data == null
+                || data.length() < MIN_LENGTH
+                || data.length() > MAX_LENGTH
+                || StringUtils.contains(data, MASK_FLAG)) return null;
+
+        if (!PATTERN.matcher(data).matches()) return null;
+
+        return new SensitiveDataItem(TYPE, name, data);
     }
 }

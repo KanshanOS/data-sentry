@@ -46,6 +46,7 @@
         <jackson.version>2.9.8</jackson.version>
         <lombok.version>1.18.30</lombok.version>
         <slf4j-api.version>1.7.36</slf4j-api.version>
+        <hutool.version>5.8.37</hutool.version>
     </properties>
 
     <dependencyManagement>
@@ -92,6 +93,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${hutool.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
