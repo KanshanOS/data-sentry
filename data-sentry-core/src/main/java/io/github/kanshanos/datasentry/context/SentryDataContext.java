@@ -20,4 +20,8 @@ public class SentryDataContext {
     private RequestHandler request;
 
     private List<SensitiveDataItem> sensitiveData;
+
+    public boolean hit() {
+        return sensitiveData != null && !sensitiveData.isEmpty();
+    }
 }

@@ -1,7 +1,7 @@
 package io.github.kanshanos.datasentry.interceptor;
 
 
-import io.github.kanshanos.datasentry.cache.CacheManager;
+import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
 import io.github.kanshanos.datasentry.context.SentryContextHolder;
 import io.github.kanshanos.datasentry.context.SentryDataContext;
 import io.github.kanshanos.datasentry.output.ContextOutput;
@@ -10,7 +10,6 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.Instant;
 
 /**
  * 拦截器
@@ -22,7 +21,11 @@ public class SentryInterceptor implements HandlerInterceptor {
 
     private final ContextOutput contextOutput;
 
-    public SentryInterceptor(ContextOutput contextOutput) {
+    private final RequestFilterChain requestFilterChain;
+
+
+    public SentryInterceptor(RequestFilterChain requestFilterChain, ContextOutput contextOutput) {
+        this.requestFilterChain = requestFilterChain;
         this.contextOutput = contextOutput;
     }
 
@@ -43,8 +46,9 @@ public class SentryInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         try {
+            SentryDataContext context = new SentryDataContext(SentryContextHolder.getRequestHandler(), SentryContextHolder.getSensitiveData());
+            requestFilterChain.handleContext(context);
             if (SentryContextHolder.hit()) {
-                CacheManager.SENSITIVE_DATA_HIT_CACHE.put(SentryContextHolder.getRequestHandler().key(), Instant.now().getEpochSecond());
                 contextOutput.outputContext(new SentryDataContext(SentryContextHolder.getRequestHandler(), SentryContextHolder.getSensitiveData()));
             }
         } finally {

@@ -89,6 +89,6 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
         if (!properties.isEnabled()) {
             return;
         }
-        registry.addInterceptor(new SentryInterceptor(contextOutput())).addPathPatterns("/**");
+        registry.addInterceptor(new SentryInterceptor(requestFilterChain(), contextOutput())).addPathPatterns("/**");
     }
 }

@@ -1,6 +1,7 @@
 package io.github.kanshanos.datasentry.chain.request;
 
 import io.github.kanshanos.datasentry.context.SentryContextHolder;
+import io.github.kanshanos.datasentry.context.SentryDataContext;
 import io.github.kanshanos.datasentry.properties.DataSentryProperties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +32,16 @@ public class TimeWindowFilterChain extends AbstractRequestFilterChain {
         long now = Instant.now().getEpochSecond();
         Long last = cache.get(key);
 
-        if (last == null || now - last > timeWindowHitIntervalSeconds) {
-            cache.put(key, now);
-            return true;
+        return last == null || now - last > timeWindowHitIntervalSeconds;
+    }
+
+
+    @Override
+    public void handleContext(SentryDataContext context) {
+        if (context != null && context.getRequest() != null) {
+            String key = context.getRequest().key();
+            cache.put(key, Instant.now().getEpochSecond());
         }
-        return false;
+        super.handleContext(context);
     }
 }
