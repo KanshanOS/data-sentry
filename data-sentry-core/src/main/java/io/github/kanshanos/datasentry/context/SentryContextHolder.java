@@ -23,13 +23,16 @@ public class SentryContextHolder {
     private static final ThreadLocal<RequestHandler> REQUEST_HANDLER = new ThreadLocal<>();
     private static final ThreadLocal<List<SensitiveDataItem>> SENSITIVE_DATA = new ThreadLocal<>();
 
-
     public static void addSensitiveData(String type, String name, String data) {
+        addSensitiveData(new SensitiveDataItem(type, name, data));
+    }
+
+    public static void addSensitiveData(SensitiveDataItem sensitiveData) {
         List<SensitiveDataItem> sensitiveDataItems = SENSITIVE_DATA.get();
         if (sensitiveDataItems == null) {
             sensitiveDataItems = new ArrayList<>();
         }
-        sensitiveDataItems.add(new SensitiveDataItem(type, name, data));
+        sensitiveDataItems.add(sensitiveData);
         SENSITIVE_DATA.set(sensitiveDataItems);
     }
 

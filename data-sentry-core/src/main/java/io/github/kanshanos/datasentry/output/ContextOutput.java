@@ -12,5 +12,5 @@ public interface ContextOutput {
 
     void outputContext(SentryDataContext context);
 
-    void outputSensitiveItem(String type, String name, String data);
+    void error(String msg, Throwable t);
 }

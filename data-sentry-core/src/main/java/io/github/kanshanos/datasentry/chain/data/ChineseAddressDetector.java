@@ -1,6 +1,8 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.output.ContextOutput;
+import io.github.kanshanos.datasentry.context.SensitiveDataItem;
+
+import java.util.regex.Pattern;
 
 /**
  * 中国地址
@@ -10,13 +12,16 @@ import io.github.kanshanos.datasentry.output.ContextOutput;
  */
 public class ChineseAddressDetector extends AbstractSensitiveDataDetector {
 
+    private static final String TYPE = "chinese_address";
+    private static final int MIN_LENGTH = 15;
+    private static final int MAX_LENGTH = 50;
+    private static final Pattern PATTERN = Pattern.compile(".*(省|市|自治区|自治州|县|区|镇|乡|村).*");
+
     @Override
-    protected boolean detect(ContextOutput output, String name, String data) {
-        if (data == null) return false;
-        boolean matches = data.matches(".*(省|市|自治区|自治州|县|区|镇|乡|村).*");
-        if (matches) {
-            output.outputSensitiveItem("chinese_address", name, data);
-        }
-        return matches;
+    protected SensitiveDataItem detect(String name, String data) {
+        if (data == null) return null;
+        if (data.length() < MIN_LENGTH || data.length() > MAX_LENGTH) return null;
+        boolean matches = PATTERN.matcher(data).matches();
+        return matches ? new SensitiveDataItem(TYPE, name, data) : null;
     }
 }

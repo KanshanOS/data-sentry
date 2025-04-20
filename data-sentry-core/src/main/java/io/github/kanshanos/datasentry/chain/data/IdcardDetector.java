@@ -1,6 +1,8 @@
 package io.github.kanshanos.datasentry.chain.data;
 
-import io.github.kanshanos.datasentry.output.ContextOutput;
+import io.github.kanshanos.datasentry.context.SensitiveDataItem;
+
+import java.util.regex.Pattern;
 
 /**
  * 身份证号码
@@ -10,18 +12,23 @@ import io.github.kanshanos.datasentry.output.ContextOutput;
  */
 public class IdcardDetector extends AbstractSensitiveDataDetector {
 
+    private static final String TYPE = "idcard";
+    private static final int MIN_LENGTH = 15;
+    private static final int MAX_LENGTH = 18;
+    private static final Pattern PATTERN = Pattern.compile("(^\\d{15}$)|(^\\d{17}([0-9Xx])$)");
+
     @Override
-    protected boolean detect(ContextOutput output, String name, String data) {
-        if (data == null) return false;
+    protected SensitiveDataItem detect(String name, String data) {
+        if (data == null) return null;
+        if (data.length() < MIN_LENGTH || data.length() > MAX_LENGTH) return null;
         // 15 位或 18 位身份证号
-        boolean matches = data.matches("(^\\d{15}$)|(^\\d{17}([0-9Xx])$)");
+        boolean matches = PATTERN.matcher(data).matches();
         if (matches && data.length() == 18) {
             matches = validateIdCardChecksum(data);
         }
-        if (matches) {
-            output.outputSensitiveItem("idcard", name, data);
-        }
-        return matches;
+
+        return matches ? new SensitiveDataItem(TYPE, name, data) : null;
+
     }
 
     private boolean validateIdCardChecksum(String idcard) {

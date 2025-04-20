@@ -1,7 +1,6 @@
 package io.github.kanshanos.datasentry.output;
 
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
-import io.github.kanshanos.datasentry.context.SentryContextHolder;
 import io.github.kanshanos.datasentry.context.SentryDataContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +23,7 @@ public class Slf4JContextOutput implements ContextOutput {
     }
 
     @Override
-    public void outputSensitiveItem(String type, String name, String data) {
-        SentryContextHolder.addSensitiveData(type, name, data);
+    public void error(String msg, Throwable t) {
+        log.error(msg, t);
     }
 }

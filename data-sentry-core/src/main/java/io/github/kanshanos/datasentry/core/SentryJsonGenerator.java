@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.core.util.JsonGeneratorDelegate;
 import io.github.kanshanos.datasentry.chain.data.SensitiveDataDetector;
+import io.github.kanshanos.datasentry.context.SensitiveDataItem;
+import io.github.kanshanos.datasentry.context.SentryContextHolder;
 import io.github.kanshanos.datasentry.output.ContextOutput;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class SentryJsonGenerator extends JsonGeneratorDelegate {
 

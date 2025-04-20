@@ -61,7 +61,12 @@ public class SentryJacksonHttpMessageConverter extends MappingJackson2HttpMessag
      * 判断是否需要使用 SenseJsonGenerator
      */
     private boolean shouldDetectSensitiveData() {
-        HttpServletRequest request = SentryContextHolder.getRequest();
-        return this.requestChain.process(request);
+        try {
+            HttpServletRequest request = SentryContextHolder.getRequest();
+            return this.requestChain.process(request);
+        } catch (Exception e) {
+            output.error("SenseJsonGenerator error", e);
+            return false;
+        }
     }
 }
