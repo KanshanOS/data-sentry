@@ -4,5 +4,5 @@ kanshanos:
     sampling-rate: 1
     exclude-path-patterns:
       - /user
-    time-window-hit-interval-seconds: 10
-    sensitive-hit-interval-seconds: 60
+    request-rate-window-interval-seconds: 10
+    sensitive-detection-hit-window-interval-seconds: 20

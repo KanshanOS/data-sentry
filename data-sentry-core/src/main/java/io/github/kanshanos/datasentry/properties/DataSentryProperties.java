@@ -37,11 +37,11 @@ public class DataSentryProperties {
     /**
      * 请求频率限制的时间间隔（秒），在此期间阻止重复处理，默认：10分钟
      */
-    private long rateLimitIntervalSeconds = 10 * 60;
+    private long requestRateWindowIntervalSeconds = 10 * 60;
 
     /**
      * 敏感数据检测缓存的有效期（秒），在此期间跳过重复检测，默认：7天
      */
-    private long cacheExpirationSeconds = 24 * 60 * 60;
+    private long sensitiveDetectionHitWindowIntervalSeconds = 24 * 60 * 60;
 
 }

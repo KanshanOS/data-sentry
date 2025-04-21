@@ -6,24 +6,24 @@ import com.fasterxml.jackson.core.util.JsonGeneratorDelegate;
 import io.github.kanshanos.datasentry.chain.data.SensitiveDataDetector;
 import io.github.kanshanos.datasentry.context.SensitiveDataItem;
 import io.github.kanshanos.datasentry.context.SentryContextHolder;
-import io.github.kanshanos.datasentry.output.ContextOutput;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class SentryJsonGenerator extends JsonGeneratorDelegate {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private String fieldName;
     private SerializableString _fieldName;
     private final SensitiveDataDetector dataChain;
-    private final ContextOutput output;
 
 
-    public SentryJsonGenerator(JsonGenerator d, SensitiveDataDetector dataChain, ContextOutput output) {
+    public SentryJsonGenerator(JsonGenerator d, SensitiveDataDetector dataChain) {
         super(d);
         this.dataChain = dataChain;
-        this.output = output;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SentryJsonGenerator extends JsonGeneratorDelegate {
                 SentryContextHolder.addSensitiveData(sensitiveDataItem);
             }
         } catch (Exception e) {
-            output.error("writeString error", e);
+            logger.error("writeString error", e);
         }
         super.writeString(text);
     }

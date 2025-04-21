@@ -35,7 +35,7 @@ public class SentryInterceptor implements HandlerInterceptor {
             String method = request.getMethod();
             String pattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 
-            SentryContextHolder.setRequestHandler(method, pattern);
+            SentryContextHolder.setRequest(method, pattern);
             return true;
         } catch (Exception e) {
             SentryContextHolder.clear();
@@ -46,10 +46,10 @@ public class SentryInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         try {
-            SentryDataContext context = new SentryDataContext(SentryContextHolder.getRequestHandler(), SentryContextHolder.getSensitiveData());
+            SentryDataContext context = SentryContextHolder.getContext();
             requestFilterChain.handleContext(context);
-            if (SentryContextHolder.hit()) {
-                contextOutput.outputContext(new SentryDataContext(SentryContextHolder.getRequestHandler(), SentryContextHolder.getSensitiveData()));
+            if (SentryContextHolder.sensitiveDataDetected()) {
+                contextOutput.outputContext(context);
             }
         } finally {
             SentryContextHolder.clear(); // 确保在任何情况下都清理 ThreadLocal

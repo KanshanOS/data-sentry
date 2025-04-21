@@ -74,8 +74,8 @@ data-sentry/
        sampling-rate: 1.0
        exclude-path-patterns:
          - /public/**
-       rate-limit-interval-seconds: 600
-       cache-expiration-seconds: 86400
+       request-rate-window-interval-seconds: 600
+       sensitive-detection-hit-window-interval-seconds: 86400
    ```
 
    See Configuration for detailed options.
@@ -125,8 +125,8 @@ DataSentry is highly configurable via `application.yml` or `application.properti
 | `kanshanos.datasentry.enabled` | Enable or disable DataSentry | `true` |
 | `kanshanos.datasentry.sampling-rate` | Probability of processing a request (0.0 to 1.0) | `0.5` |
 | `kanshanos.datasentry.exclude-path-patterns` | List of URI patterns to exclude from detection | `[]` |
-| `kanshanos.datasentry.rate-limit-interval-seconds` | Minimum interval (seconds) between processing the same request | `600` (10 minutes) |
-| `kanshanos.datasentry.cache-expiration-seconds` | Cache duration (seconds) for requests with detected sensitive data | `86400` (7 days) |
+| `kanshanos.datasentry.request-rate-window-interval-seconds` | Minimum interval (seconds) between processing the same request | `600` (10 minutes) |
+| `kanshanos.datasentry.sensitive-detection-hit-window-interval-seconds` | Cache duration (seconds) for requests with detected sensitive data | `86400` (7 days) |
 
 Example configuration:
 
@@ -138,8 +138,8 @@ kanshanos:
     exclude-path-patterns:
       - /api/public/**
       - /health
-    rate-limit-interval-seconds: 300
-    cache-expiration-seconds: 3600
+    request-rate-window-interval-seconds: 300
+    sensitive-detection-hit-window-interval-seconds: 3600
 ```
 
 ## Customization

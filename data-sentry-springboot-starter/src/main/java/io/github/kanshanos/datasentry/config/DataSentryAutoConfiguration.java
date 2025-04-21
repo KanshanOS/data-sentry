@@ -12,15 +12,15 @@ import io.github.kanshanos.datasentry.chain.data.MobileDetector;
 import io.github.kanshanos.datasentry.chain.data.SensitiveDataDetector;
 import io.github.kanshanos.datasentry.chain.request.AbstractRequestFilterChain;
 import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
+import io.github.kanshanos.datasentry.chain.request.RequestRateWindowFilter;
 import io.github.kanshanos.datasentry.chain.request.RequestURIWhitelistFilterChain;
 import io.github.kanshanos.datasentry.chain.request.SamplingRateFilterChain;
-import io.github.kanshanos.datasentry.chain.request.SensitiveDataCacheFilter;
-import io.github.kanshanos.datasentry.chain.request.RequestRateLimitFilter;
+import io.github.kanshanos.datasentry.chain.request.SensitiveDetectionHitWindowFilter;
 import io.github.kanshanos.datasentry.core.SentryJacksonHttpMessageConverter;
 import io.github.kanshanos.datasentry.interceptor.SentryInterceptor;
-import io.github.kanshanos.datasentry.properties.DataSentryProperties;
 import io.github.kanshanos.datasentry.output.ContextOutput;
 import io.github.kanshanos.datasentry.output.Slf4JContextOutput;
+import io.github.kanshanos.datasentry.properties.DataSentryProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -51,7 +51,11 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
     public HttpMessageConverter<Object> loggingJacksonConverter(ObjectMapper objectMapper,
                                                                 RequestFilterChain requestFilterChain,
                                                                 SensitiveDataDetector sensitiveDataDetector) {
-        return new SentryJacksonHttpMessageConverter(objectMapper, requestFilterChain, sensitiveDataDetector, contextOutput());
+        return new SentryJacksonHttpMessageConverter(
+                objectMapper,
+                requestFilterChain,
+                sensitiveDataDetector
+        );
     }
 
     @Bean
@@ -59,8 +63,8 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
     public RequestFilterChain requestFilterChain() {
         AbstractRequestFilterChain head = new SamplingRateFilterChain(properties);
         head.next(new RequestURIWhitelistFilterChain(properties))
-                .next(new RequestRateLimitFilter(properties))
-                .next(new SensitiveDataCacheFilter(properties));
+                .next(new RequestRateWindowFilter(properties))
+                .next(new SensitiveDetectionHitWindowFilter(properties));
         return head;
     }
 
@@ -82,7 +86,6 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
     public ContextOutput contextOutput() {
         return new Slf4JContextOutput();
     }
-
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

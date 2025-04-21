@@ -74,8 +74,8 @@ data-sentry/
        sampling-rate: 1.0
        exclude-path-patterns:
          - /public/**
-       rate-limit-interval-seconds: 600
-       cache-expiration-seconds: 86400
+       request-rate-window-interval-seconds: 600
+       sensitive-detection-hit-window-interval-seconds: 86400
    ```
 
    详见配置说明。
@@ -125,8 +125,8 @@ DataSentry 支持通过 `application.yml` 或 `application.properties` 进行高
 | `kanshanos.datasentry.enabled` | 是否启用 DataSentry | `true` |
 | `kanshanos.datasentry.sampling-rate` | 请求处理概率（0.0 到 1.0） | `0.5` |
 | `kanshanos.datasentry.exclude-path-patterns` | 排除检测的 URI 模式列表 | `[]` |
-| `kanshanos.datasentry.rate-limit-interval-seconds` | 同一请求处理的最小间隔（秒） | `600`（10 分钟） |
-| `kanshanos.datasentry.cache-expiration-seconds` | 敏感数据检测缓存有效期（秒） | `86400`（7 天） |
+| `kanshanos.datasentry.request-rate-window-interval-seconds` | 同一请求处理的最小间隔（秒） | `600`（10 分钟） |
+| `kanshanos.datasentry.sensitive-detection-hit-window-interval-seconds` | 敏感数据检测缓存有效期（秒） | `86400`（7 天） |
 
 示例配置：
 
@@ -138,8 +138,8 @@ kanshanos:
     exclude-path-patterns:
       - /api/public/**
       - /health
-    rate-limit-interval-seconds: 300
-    cache-expiration-seconds: 3600
+    request-rate-window-interval-seconds: 300
+    sensitive-detection-hit-window-interval-seconds: 3600
 ```
 
 ## 自定义开发

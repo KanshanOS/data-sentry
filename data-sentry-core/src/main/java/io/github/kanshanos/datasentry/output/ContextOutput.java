@@ -12,5 +12,5 @@ public interface ContextOutput {
 
     void outputContext(SentryDataContext context);
 
-    void error(String msg, Throwable t);
+
 }

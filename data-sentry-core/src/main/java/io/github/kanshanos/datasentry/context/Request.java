@@ -13,11 +13,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestHandler {
+public class Request {
 
     private String method;
 
     private String pattern;
+
+    public String format() {
+        return String.format("[%s] - %s", method, pattern);
+    }
 
     public String key() {
         return method + "#" + pattern;

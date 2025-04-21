@@ -2,7 +2,6 @@ package io.github.kanshanos.datasentry.context;
 
 
 import lombok.experimental.UtilityClass;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -20,47 +19,56 @@ import java.util.List;
 public class SentryContextHolder {
 
 
-    private static final ThreadLocal<RequestHandler> REQUEST_HANDLER = new ThreadLocal<>();
-    private static final ThreadLocal<List<SensitiveDataItem>> SENSITIVE_DATA = new ThreadLocal<>();
+    private static final ThreadLocal<SentryDataContext> SENTRY_DATA_CONTEXT = ThreadLocal.withInitial(SentryDataContext::new);
 
-    public static void addSensitiveData(String type, String name, String data) {
-        addSensitiveData(new SensitiveDataItem(type, name, data));
+
+    public static SentryDataContext getContext() {
+        return SENTRY_DATA_CONTEXT.get();
     }
 
+    public static void setRequest(String method, String pattern) {
+        getContext().setRequest(new Request(method, pattern));
+    }
+
+    public static Request getRequest() {
+        return getContext().getRequest();
+    }
+
+
     public static void addSensitiveData(SensitiveDataItem sensitiveData) {
-        List<SensitiveDataItem> sensitiveDataItems = SENSITIVE_DATA.get();
+        SentryDataContext context = getContext();
+        List<SensitiveDataItem> sensitiveDataItems = context.getSensitiveData();
         if (sensitiveDataItems == null) {
             sensitiveDataItems = new ArrayList<>();
         }
         sensitiveDataItems.add(sensitiveData);
-        SENSITIVE_DATA.set(sensitiveDataItems);
+        context.setSensitiveData(sensitiveDataItems);
     }
 
     public static List<SensitiveDataItem> getSensitiveData() {
-        return SENSITIVE_DATA.get();
+        return SENTRY_DATA_CONTEXT.get().getSensitiveData();
     }
 
-    public static boolean hit() {
-        return !CollectionUtils.isEmpty(SENSITIVE_DATA.get());
+    public static boolean processedByDetector() {
+        return SENTRY_DATA_CONTEXT.get().isProcessedByDetector();
     }
 
-    public static HttpServletRequest getRequest() {
+    public static void processedByDetector(boolean processedByDetector) {
+        SENTRY_DATA_CONTEXT.get().setProcessedByDetector(processedByDetector);
+    }
+
+    public static boolean sensitiveDataDetected() {
+        return SENTRY_DATA_CONTEXT.get().isSensitiveDataDetected();
+    }
+
+
+    public static HttpServletRequest getHttpServletRequest() {
         ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         return attr != null ? attr.getRequest() : null;
     }
 
 
-    public static void setRequestHandler(String method, String pattern) {
-        REQUEST_HANDLER.set(new RequestHandler(method, pattern));
-    }
-
-
-    public static RequestHandler getRequestHandler() {
-        return REQUEST_HANDLER.get();
-    }
-
     public static void clear() {
-        REQUEST_HANDLER.remove();
-        SENSITIVE_DATA.remove();
+        SENTRY_DATA_CONTEXT.remove();
     }
 }

@@ -17,11 +17,30 @@ import java.util.List;
 @AllArgsConstructor
 public class SentryDataContext {
 
-    private RequestHandler request;
+    /**
+     * 请求信息
+     */
+    private Request request;
 
+    /**
+     * 敏感数据信息
+     */
     private List<SensitiveDataItem> sensitiveData;
 
-    public boolean hit() {
-        return sensitiveData != null && !sensitiveData.isEmpty();
+    /**
+     * 是否被检测过
+     */
+    private boolean processedByDetector = false;
+
+    /**
+     * 是否检测到敏感数据
+     */
+    private boolean sensitiveDataDetected = false;
+
+
+    public void setSensitiveData(List<SensitiveDataItem> sensitiveData) {
+        this.sensitiveData = sensitiveData;
+        this.sensitiveDataDetected = sensitiveData != null && !sensitiveData.isEmpty();
+
     }
 }

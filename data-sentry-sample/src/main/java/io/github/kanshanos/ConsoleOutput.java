@@ -13,9 +13,4 @@ public class ConsoleOutput implements ContextOutput {
     public void outputContext(SentryDataContext context) {
         System.out.println("Sentry Data URI :[" + context.getRequest().getMethod() + "]" + context.getRequest().getPattern() + ", Senses List : " + context.getSensitiveData().stream().map(SensitiveDataItem::format).collect(java.util.stream.Collectors.joining(",")));
     }
-
-    @Override
-    public void error(String msg, Throwable t) {
-        System.out.println("Sentry Data Error :" + msg + ", Exception :" + t.getMessage());
-    }
 }

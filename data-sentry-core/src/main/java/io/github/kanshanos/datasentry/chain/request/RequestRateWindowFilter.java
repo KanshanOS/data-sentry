@@ -10,38 +10,39 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 用于避免在指定时间窗口内对已检测到敏感数据的请求重复检测
+ * 限制请求在指定时间窗口内的处理频率
  *
  * @author Kanshan
- * @since 2025/4/19 21:23
+ * @since 2025/4/18 14:33
  */
-public class SensitiveDataCacheFilter extends AbstractRequestFilterChain {
+public class RequestRateWindowFilter extends AbstractRequestFilterChain {
 
-    public final Map<String, Long> cache = new ConcurrentHashMap<>();
+    private final Map<String, Long> cache = new ConcurrentHashMap<>();
 
     /**
-     * 缓存有效期（秒），在此期间跳过重复检测
+     * 频率限制时间间隔（秒），在此期间阻止重复处理
      */
-    private final long cacheExpirationSeconds;
+    private final long requestRateWindowIntervalSeconds;
 
-    public SensitiveDataCacheFilter(DataSentryProperties properties) {
+    public RequestRateWindowFilter(DataSentryProperties properties) {
         super(properties);
-        cacheExpirationSeconds = properties.getCacheExpirationSeconds();
+        this.requestRateWindowIntervalSeconds = properties.getRequestRateWindowIntervalSeconds();
     }
 
     @Override
     public boolean filter(HttpServletRequest request) {
-        String key = SentryContextHolder.getRequestHandler().key();
+        String key = SentryContextHolder.getRequest().key();
         long now = Instant.now().getEpochSecond();
         Long last = cache.get(key);
 
-        boolean recheck = last == null || now - last > cacheExpirationSeconds;
+        boolean recheck = last == null || now - last > requestRateWindowIntervalSeconds;
         return recheck && super.filter(request);
     }
 
+
     @Override
     public void handleContext(SentryDataContext context) {
-        if (context != null && SentryContextHolder.hit()) {
+        if (context.isProcessedByDetector()) {
             String key = context.getRequest().key();
             cache.put(key, Instant.now().getEpochSecond());
         }
