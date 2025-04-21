@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.github.kanshanos.datasentry.chain.data.SensitiveDataDetector;
 import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
+import io.github.kanshanos.datasentry.context.Request;
 import io.github.kanshanos.datasentry.context.SentryContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
@@ -74,7 +74,7 @@ public class SentryJacksonHttpMessageConverter extends MappingJackson2HttpMessag
      */
     private boolean shouldDetectSensitiveData() {
         try {
-            HttpServletRequest request = SentryContextHolder.getHttpServletRequest();
+            Request request = SentryContextHolder.getRequest();
             boolean shouldDetect = this.requestChain.filter(request);
             if (shouldDetect) {
                 logger.debug("Request approved for sensitive data detection: {}", SentryContextHolder.getRequest().format());

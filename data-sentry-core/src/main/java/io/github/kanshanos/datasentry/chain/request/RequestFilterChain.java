@@ -1,8 +1,7 @@
 package io.github.kanshanos.datasentry.chain.request;
 
+import io.github.kanshanos.datasentry.context.Request;
 import io.github.kanshanos.datasentry.context.SentryDataContext;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 请求处理决策接口
@@ -17,7 +16,7 @@ public interface RequestFilterChain {
      * @param request 请求
      * @return 是否需要处理
      */
-    boolean filter(HttpServletRequest request);
+    boolean filter(Request request);
 
     /**
      * 处理上下文数据，例如缓存回写

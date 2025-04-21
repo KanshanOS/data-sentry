@@ -1,10 +1,9 @@
 package io.github.kanshanos.datasentry.chain.request;
 
-import io.github.kanshanos.datasentry.context.SentryContextHolder;
+import io.github.kanshanos.datasentry.context.Request;
 import io.github.kanshanos.datasentry.context.SentryDataContext;
 import io.github.kanshanos.datasentry.properties.DataSentryProperties;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,8 +29,8 @@ public class SensitiveDetectionHitWindowFilter extends AbstractRequestFilterChai
     }
 
     @Override
-    public boolean filter(HttpServletRequest request) {
-        String key = SentryContextHolder.getRequest().key();
+    public boolean filter(Request request) {
+        String key = request.key();
         long now = Instant.now().getEpochSecond();
         Long last = cache.get(key);
 

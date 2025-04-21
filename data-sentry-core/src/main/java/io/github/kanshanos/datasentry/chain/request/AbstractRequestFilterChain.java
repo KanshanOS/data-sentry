@@ -1,9 +1,8 @@
 package io.github.kanshanos.datasentry.chain.request;
 
+import io.github.kanshanos.datasentry.context.Request;
 import io.github.kanshanos.datasentry.context.SentryDataContext;
 import io.github.kanshanos.datasentry.properties.DataSentryProperties;
-
-import javax.servlet.http.HttpServletRequest;
 
 public abstract class AbstractRequestFilterChain implements RequestFilterChain {
     private final DataSentryProperties properties;
@@ -19,7 +18,7 @@ public abstract class AbstractRequestFilterChain implements RequestFilterChain {
     }
 
     @Override
-    public boolean filter(HttpServletRequest request) {
+    public boolean filter(Request request) {
         return next == null || next.filter(request);
     }
 
