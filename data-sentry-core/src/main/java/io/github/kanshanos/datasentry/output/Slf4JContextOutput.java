@@ -18,7 +18,7 @@ public class Slf4JContextOutput implements ContextOutput {
 
     @Override
     public void outputContext(SentryDataContext context) {
-        logger.info("Sentry Data URI :[{}] {}, Senses List : {}",
+        logger.info("Sentry Data URI :[{}] {}, Senses List : [{}]",
                 context.getRequest().getMethod(),
                 context.getRequest().getPattern(),
                 context.getSensitiveData().stream().map(SensitiveDataItem::format).collect(Collectors.joining(",")));

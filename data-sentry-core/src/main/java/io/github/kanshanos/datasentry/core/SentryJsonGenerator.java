@@ -17,7 +17,7 @@ public class SentryJsonGenerator extends JsonGeneratorDelegate {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private String fieldName;
-    private SerializableString _fieldName;
+    private String _fieldName;
     private final SensitiveDataDetector dataChain;
 
 
@@ -28,20 +28,20 @@ public class SentryJsonGenerator extends JsonGeneratorDelegate {
 
     @Override
     public void writeFieldName(String name) throws IOException {
-        this.fieldName = name;
+        this._fieldName = name;
         super.writeFieldName(name);
     }
 
     @Override
     public void writeFieldName(SerializableString name) throws IOException {
-        this._fieldName = name;
+        this.fieldName = name.getValue();
         super.writeFieldName(name);
     }
 
     @Override
     public void writeString(String text) throws IOException {
         try {
-            String name = StringUtils.firstNonBlank(fieldName, _fieldName.getValue());
+            String name = StringUtils.firstNonBlank(fieldName, _fieldName);
             SensitiveDataItem sensitiveDataItem = this.dataChain.detect(name, text);
             if (Objects.nonNull(sensitiveDataItem)) {
                 SentryContextHolder.addSensitiveData(sensitiveDataItem);
