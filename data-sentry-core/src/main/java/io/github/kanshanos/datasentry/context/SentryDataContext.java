@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 敏感数据信息
+ * 敏感数据检测上下文信息
  *
  * @author Kanshan
  * @since 2025/4/18 15:51
@@ -41,6 +41,5 @@ public class SentryDataContext {
     public void setSensitiveData(List<SensitiveDataItem> sensitiveData) {
         this.sensitiveData = sensitiveData;
         this.sensitiveDataDetected = sensitiveData != null && !sensitiveData.isEmpty();
-
     }
 }

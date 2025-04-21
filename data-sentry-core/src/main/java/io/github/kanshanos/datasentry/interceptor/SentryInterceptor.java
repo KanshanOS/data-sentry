@@ -47,8 +47,11 @@ public class SentryInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         try {
             SentryDataContext context = SentryContextHolder.getContext();
-            requestFilterChain.handleContext(context);
-            if (SentryContextHolder.sensitiveDataDetected()) {
+            if (context.isProcessedByDetector()) {
+                requestFilterChain.handleContext(context);
+            }
+
+            if (context.isSensitiveDataDetected()) {
                 contextOutput.outputContext(context);
             }
         } finally {
