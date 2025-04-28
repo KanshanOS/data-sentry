@@ -208,12 +208,6 @@ public class CustomOutput implements ContextOutput {
         // Log to database or external system
         System.out.println("Custom Output: " + context);
     }
-
-    @Override
-    public void error(String msg, Throwable t) {
-        // Handle errors
-        System.err.println("Error: " + msg + ", " + t.getMessage());
-    }
 }
 ```
 

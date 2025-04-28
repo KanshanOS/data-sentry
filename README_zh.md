@@ -208,12 +208,6 @@ public class CustomOutput implements ContextOutput {
         // 记录到数据库或外部系统
         System.out.println("自定义输出: " + context);
     }
-
-    @Override
-    public void error(String msg, Throwable t) {
-        // 处理错误
-        System.err.println("错误: " + msg + ", " + t.getMessage());
-    }
 }
 ```
 
