@@ -1,12 +1,27 @@
 package io.github.kanshanos.datasentry.utils;
 
-import cn.hutool.core.lang.Validator;
+import lombok.experimental.UtilityClass;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
+/**
+ * 中文姓名校验工具类
+ *
+ * @author Kanshan
+ * @since 2025/5/29 13:21
+ */
+@UtilityClass
 public class ChineseNameValidator {
+    /**
+     * 中文汉字
+     * 参照维基百科汉字Unicode范围(https://zh.wikipedia.org/wiki/%E6%B1%89%E5%AD%97 页面右侧)
+     */
+    private static final Pattern PATTERN = Pattern.compile("[\u2E80-\u2EFF\u2F00-\u2FDF\u31C0-\u31EF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uD840\uDC00-\uD869\uDEDF\uD869\uDF00-\uD86D\uDF3F\uD86D\uDF40-\uD86E\uDC1F\uD86E\uDC20-\uD873\uDEAF\uD87E\uDC00-\uD87E\uDE1F]+");
+
+
     // 常见单姓
     private static final Set<String> SINGLE_SURNAME = new HashSet<>(Arrays.asList(
             "赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "褚", "卫", "蒋", "沈",
@@ -49,7 +64,7 @@ public class ChineseNameValidator {
         }
 
         // 检查是否为中文字符
-        if (!Validator.isChineseName(name)) {
+        if (!PATTERN.matcher(name).matches()) {
             return false;
         }
 

@@ -28,9 +28,9 @@ public class SentryDataContext {
     private List<SensitiveDataItem> sensitiveData;
 
     /**
-     * 是否被检测过
+     * 当前请求是否需要被检测
      */
-    private boolean processedByDetector = false;
+    private boolean shouldDetect = false;
 
     /**
      * 是否检测到敏感数据

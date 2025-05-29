@@ -49,12 +49,12 @@ public class SentryContextHolder {
         return SENTRY_DATA_CONTEXT.get().getSensitiveData();
     }
 
-    public static boolean processedByDetector() {
-        return SENTRY_DATA_CONTEXT.get().isProcessedByDetector();
+    public static boolean shouldDetect() {
+        return SENTRY_DATA_CONTEXT.get().isShouldDetect();
     }
 
-    public static void processedByDetector(boolean processedByDetector) {
-        SENTRY_DATA_CONTEXT.get().setProcessedByDetector(processedByDetector);
+    public static void shouldDetect(boolean shouldDetect) {
+        SENTRY_DATA_CONTEXT.get().setShouldDetect(shouldDetect);
     }
 
     public static boolean sensitiveDataDetected() {

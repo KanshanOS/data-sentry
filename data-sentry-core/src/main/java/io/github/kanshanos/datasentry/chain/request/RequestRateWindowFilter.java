@@ -41,7 +41,7 @@ public class RequestRateWindowFilter extends AbstractRequestFilterChain {
 
     @Override
     public void handleContext(SentryDataContext context) {
-        if (context.isProcessedByDetector()) {
+        if (context.isShouldDetect()) {
             String key = context.getRequest().key();
             cache.put(key, Instant.now().getEpochSecond());
         }

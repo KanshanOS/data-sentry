@@ -36,6 +36,13 @@ public class SentryInterceptor implements HandlerInterceptor {
             String pattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 
             SentryContextHolder.setRequest(method, pattern);
+
+            // 提前执行过滤链，决定是否需要敏感数据检测
+            boolean shouldDetect = requestFilterChain.filter(SentryContextHolder.getRequest());
+            SentryContextHolder.shouldDetect(shouldDetect);
+            if (shouldDetect) {
+                SentryContextHolder.shouldDetect(true);
+            }
             return true;
         } catch (Exception e) {
             SentryContextHolder.clear();
@@ -47,7 +54,7 @@ public class SentryInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         try {
             SentryDataContext context = SentryContextHolder.getContext();
-            if (context.isProcessedByDetector()) {
+            if (context.isShouldDetect()) {
                 requestFilterChain.handleContext(context);
             }
 
