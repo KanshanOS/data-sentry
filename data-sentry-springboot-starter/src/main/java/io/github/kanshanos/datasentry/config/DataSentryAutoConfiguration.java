@@ -1,6 +1,5 @@
 package io.github.kanshanos.datasentry.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.kanshanos.datasentry.chain.data.AbstractSensitiveDataDetector;
 import io.github.kanshanos.datasentry.chain.data.BankCardDetector;
 import io.github.kanshanos.datasentry.chain.data.ChineseAddressDetector;
@@ -16,7 +15,6 @@ import io.github.kanshanos.datasentry.chain.request.RequestRateWindowFilter;
 import io.github.kanshanos.datasentry.chain.request.RequestURIWhitelistFilterChain;
 import io.github.kanshanos.datasentry.chain.request.SamplingRateFilterChain;
 import io.github.kanshanos.datasentry.chain.request.SensitiveDetectionHitWindowFilter;
-import io.github.kanshanos.datasentry.core.SentryJacksonHttpMessageConverter;
 import io.github.kanshanos.datasentry.interceptor.SentryInterceptor;
 import io.github.kanshanos.datasentry.output.ContextOutput;
 import io.github.kanshanos.datasentry.output.Slf4JContextOutput;
@@ -25,7 +23,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -45,18 +42,6 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
         this.properties = properties;
     }
 
-
-    @Bean
-    @ConditionalOnMissingBean
-    public HttpMessageConverter<Object> loggingJacksonConverter(ObjectMapper objectMapper,
-                                                                RequestFilterChain requestFilterChain,
-                                                                SensitiveDataDetector sensitiveDataDetector) {
-        return new SentryJacksonHttpMessageConverter(
-                objectMapper,
-                requestFilterChain,
-                sensitiveDataDetector
-        );
-    }
 
     @Bean
     @ConditionalOnMissingBean
