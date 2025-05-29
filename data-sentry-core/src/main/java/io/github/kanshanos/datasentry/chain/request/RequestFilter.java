@@ -9,7 +9,7 @@ import io.github.kanshanos.datasentry.context.SentryDataContext;
  * @author Kanshan
  * @since 2025/4/18 11:29
  */
-public interface RequestFilterChain {
+public interface RequestFilter {
     /**
      * 过滤请求，决定是否需要处理
      *

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @author Kanshan
  * @since 2025/4/18 14:34
  */
-public class RequestURIWhitelistFilterChain extends AbstractRequestFilterChain {
+public class RequestURIWhitelistFilter extends AbstractRequestFilter {
 
     private static final PathPatternParser parser = new PathPatternParser();
 
@@ -24,7 +24,7 @@ public class RequestURIWhitelistFilterChain extends AbstractRequestFilterChain {
 
     private final ConcurrentHashMap<String, Boolean> cache = new ConcurrentHashMap<>();
 
-    public RequestURIWhitelistFilterChain(DataSentryProperties properties) {
+    public RequestURIWhitelistFilter(DataSentryProperties properties) {
         super(properties);
 
         this.excludePathPatterns = properties.getExcludePathPatterns().stream()

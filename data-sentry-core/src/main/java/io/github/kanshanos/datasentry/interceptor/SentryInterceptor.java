@@ -1,7 +1,7 @@
 package io.github.kanshanos.datasentry.interceptor;
 
 
-import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
+import io.github.kanshanos.datasentry.chain.request.RequestFilter;
 import io.github.kanshanos.datasentry.context.SentryContextHolder;
 import io.github.kanshanos.datasentry.context.SentryDataContext;
 import io.github.kanshanos.datasentry.output.ContextOutput;
@@ -21,11 +21,11 @@ public class SentryInterceptor implements HandlerInterceptor {
 
     private final ContextOutput contextOutput;
 
-    private final RequestFilterChain requestFilterChain;
+    private final RequestFilter requestFilter;
 
 
-    public SentryInterceptor(RequestFilterChain requestFilterChain, ContextOutput contextOutput) {
-        this.requestFilterChain = requestFilterChain;
+    public SentryInterceptor(RequestFilter requestFilter, ContextOutput contextOutput) {
+        this.requestFilter = requestFilter;
         this.contextOutput = contextOutput;
     }
 
@@ -38,7 +38,7 @@ public class SentryInterceptor implements HandlerInterceptor {
             SentryContextHolder.setRequest(method, pattern);
 
             // 提前执行过滤链，决定是否需要敏感数据检测
-            boolean shouldDetect = requestFilterChain.filter(SentryContextHolder.getRequest());
+            boolean shouldDetect = requestFilter.filter(SentryContextHolder.getRequest());
             SentryContextHolder.shouldDetect(shouldDetect);
             if (shouldDetect) {
                 SentryContextHolder.shouldDetect(true);
@@ -55,7 +55,7 @@ public class SentryInterceptor implements HandlerInterceptor {
         try {
             SentryDataContext context = SentryContextHolder.getContext();
             if (context.isShouldDetect()) {
-                requestFilterChain.handleContext(context);
+                requestFilter.handleContext(context);
             }
 
             if (context.isSensitiveDataDetected()) {

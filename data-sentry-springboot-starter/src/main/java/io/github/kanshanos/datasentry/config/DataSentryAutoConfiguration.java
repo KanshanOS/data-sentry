@@ -9,11 +9,11 @@ import io.github.kanshanos.datasentry.chain.data.FixedPhoneDetector;
 import io.github.kanshanos.datasentry.chain.data.IdcardDetector;
 import io.github.kanshanos.datasentry.chain.data.MobileDetector;
 import io.github.kanshanos.datasentry.chain.data.SensitiveDataDetector;
-import io.github.kanshanos.datasentry.chain.request.AbstractRequestFilterChain;
-import io.github.kanshanos.datasentry.chain.request.RequestFilterChain;
+import io.github.kanshanos.datasentry.chain.request.AbstractRequestFilter;
+import io.github.kanshanos.datasentry.chain.request.RequestFilter;
 import io.github.kanshanos.datasentry.chain.request.RequestRateWindowFilter;
-import io.github.kanshanos.datasentry.chain.request.RequestURIWhitelistFilterChain;
-import io.github.kanshanos.datasentry.chain.request.SamplingRateFilterChain;
+import io.github.kanshanos.datasentry.chain.request.RequestURIWhitelistFilter;
+import io.github.kanshanos.datasentry.chain.request.SamplingRateFilter;
 import io.github.kanshanos.datasentry.chain.request.SensitiveDetectionHitWindowFilter;
 import io.github.kanshanos.datasentry.interceptor.SentryInterceptor;
 import io.github.kanshanos.datasentry.output.ContextOutput;
@@ -45,9 +45,9 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean
-    public RequestFilterChain requestFilterChain() {
-        AbstractRequestFilterChain head = new SamplingRateFilterChain(properties);
-        head.next(new RequestURIWhitelistFilterChain(properties))
+    public RequestFilter requestFilter() {
+        AbstractRequestFilter head = new SamplingRateFilter(properties);
+        head.next(new RequestURIWhitelistFilter(properties))
                 .next(new RequestRateWindowFilter(properties))
                 .next(new SensitiveDetectionHitWindowFilter(properties));
         return head;
@@ -77,6 +77,6 @@ public class DataSentryAutoConfiguration implements WebMvcConfigurer {
         if (!properties.isEnabled()) {
             return;
         }
-        registry.addInterceptor(new SentryInterceptor(requestFilterChain(), contextOutput())).addPathPatterns("/**");
+        registry.addInterceptor(new SentryInterceptor(requestFilter(), contextOutput())).addPathPatterns("/**");
     }
 }

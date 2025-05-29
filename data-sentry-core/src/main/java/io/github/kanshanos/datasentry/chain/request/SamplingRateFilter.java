@@ -11,14 +11,14 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Kanshan
  * @since 2025/4/18 14:34
  */
-public class SamplingRateFilterChain extends AbstractRequestFilterChain {
+public class SamplingRateFilter extends AbstractRequestFilter {
 
     /**
      * 采样率
      */
     private final double samplingRate;
 
-    public SamplingRateFilterChain(DataSentryProperties properties) {
+    public SamplingRateFilter(DataSentryProperties properties) {
         super(properties);
         this.samplingRate = properties.getSamplingRate();
     }

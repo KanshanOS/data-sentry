@@ -4,17 +4,17 @@ import io.github.kanshanos.datasentry.context.Request;
 import io.github.kanshanos.datasentry.context.SentryDataContext;
 import io.github.kanshanos.datasentry.properties.DataSentryProperties;
 
-public abstract class AbstractRequestFilterChain implements RequestFilterChain {
+public abstract class AbstractRequestFilter implements RequestFilter {
     private final DataSentryProperties properties;
-    private RequestFilterChain next;
+    private RequestFilter next;
 
-    public AbstractRequestFilterChain(DataSentryProperties properties) {
+    public AbstractRequestFilter(DataSentryProperties properties) {
         this.properties = properties;
     }
 
-    public AbstractRequestFilterChain next(RequestFilterChain next) {
+    public AbstractRequestFilter next(RequestFilter next) {
         this.next = next;
-        return (AbstractRequestFilterChain) next;
+        return (AbstractRequestFilter) next;
     }
 
     @Override

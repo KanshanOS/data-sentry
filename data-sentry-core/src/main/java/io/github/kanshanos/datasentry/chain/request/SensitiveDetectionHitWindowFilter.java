@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Kanshan
  * @since 2025/4/19 21:23
  */
-public class SensitiveDetectionHitWindowFilter extends AbstractRequestFilterChain {
+public class SensitiveDetectionHitWindowFilter extends AbstractRequestFilter {
 
     public final Map<String, Long> cache = new ConcurrentHashMap<>();
 
